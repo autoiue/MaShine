@@ -12,7 +12,7 @@ public class Node<T>{
 		return value;
 	}
 
-	public String getClassName(){
+	public String getType(){
 		if(value instanceof Number){
 			return "Number";
 		}

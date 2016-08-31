@@ -9,6 +9,7 @@ package mashine.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mashine.engine.blocks.*;
 import mashine.MaShine;
@@ -16,6 +17,7 @@ import mashine.MaShine;
 public class Engine extends Thread{
 
 	private List<Block> blocks;
+	private Map<String, BlockFactory> factories;
 	private float tickRate = 10f;
 	private long  tickRatePeriod = 1000000000L / 42L; // target is 42 tps
 
@@ -23,7 +25,7 @@ public class Engine extends Thread{
 	public Engine(){
 		blocks = new ArrayList<Block>();
 
-		//blocks.add(new Ola());
+		blocks.add(new Ola());
 		blocks.add(new Sequencer());
 
 		this.start();
@@ -73,6 +75,8 @@ public class Engine extends Thread{
 	}
 
 	public List<Block> getBlocks(){return blocks;}
+
+	public Block getBlock(String uniqBlockId){return null;}
 
 	public static String hex(int n) {
 		return String.format("%2s", Integer.toHexString(n)).replace(' ', '0');

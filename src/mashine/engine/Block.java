@@ -53,6 +53,9 @@ public class Block{
 	public int w(){return Math.max(w, 2 +Math.max(controlIn.size(), controlOut.size()));}
 	public int h(){return Math.max(h, 2 +Math.max(contentIn.size(), contentOut.size()));}
 
+	public void x(int x){this.x = x;}
+	public void y(int y){this.y = y;}
+
 	public int minWidth(){return 1;}
 	public int minHeight(){return 1;}
 

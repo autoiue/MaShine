@@ -8,27 +8,45 @@ import java.util.HashMap;
 import processing.core.*;
 
 import mashine.engine.*;
+import mashine.utils.*;
 import mashine.MaShine;
 
 public class Grid{
 
 	PApplet p;
 
+	private World world;
+
 	private List<Path> paths;
 	private List<Block> blocks;
 
-	private int gridSize = 50;
+	private int gridSize = 30;
 	private PVector pxOffset = new PVector(0,0);
 
 	private PVector start = null;
 	private PVector end = null;
 
 	private boolean click = false;
+	private int gmousex, gmousey;
 
 	public Grid(){
 		this.p = MaShine.m;
 		paths = new ArrayList<Path>();
 		blocks = new ArrayList<Block>();
+
+		world = new World();
+
+		blocks = MaShine.engine.getBlocks();
+
+		int offset = Math.round(p.width/gridSize)-2;
+		int middle = Math.round(p.height/gridSize/2);
+
+		for(Block block : MaShine.engine.getBlocks()){
+			block.x(offset-block.w());
+			block.y(middle-block.h()/2);
+			offset -= 2+block.w();
+			world.updateBlock(block);
+		}
 	}
 
 	public void draw(){
@@ -38,8 +56,8 @@ public class Grid{
 		p.pushMatrix();
 		p.translate(pxOffset.x, pxOffset.y);
 
-		int gmousex = (int) Math.round((p.mouseX-pxOffset.x)/gridSize);
-		int gmousey = (int) Math.round((p.mouseY-pxOffset.y)/gridSize);
+		gmousex = (int) Math.round((p.mouseX-pxOffset.x)/gridSize);
+		gmousey = (int) Math.round((p.mouseY-pxOffset.y)/gridSize);
 
 		for(Path path : paths){		
 			drawPath(path.get(), 105,240,174, 25);
@@ -52,48 +70,15 @@ public class Grid{
 		}
 
 		for(Block b : blocks){
-			p.fill(55,71,79); // #37474F
+			FlatColor.fill(p.g, Colors.MATERIAL.BLUE_GREY._800); 
 			p.noStroke();
 			p.rect(b.x()*gridSize, b.y()*gridSize, b.w()*gridSize+1, b.h()*gridSize+1);
+		}
 
-			p.stroke(38,50,56); // #263238
-			p.strokeWeight(4);
-
-			p.fill(100,255,218); // #64FFDA
-			int i = 1;
-
-			for(InNode a : b.getContentInNodes().values()){
-				drawNode(a, b.x(), i+b.y());
-				checkClickedNode(b.x(), i+b.y(), gmousex, gmousey, 1);
-				i++;
-				MaShine.println(a.getClassName()+": "+a.get());
-			}
-
-			i = 1;
-
-			for(InNode a : b.getControlInNodes().values()){
-				drawNode(a,i+ b.x(), b.y()); 
-				checkClickedNode(i+b.x(), b.y(), gmousex, gmousey, 1);
-				i++;
-				MaShine.println(a.getClassName()+": "+a.get());
-			}
-			
-			i = 1;
-
-			for(OutNode a : b.getContentOutNodes().values()){
-				drawNode(a, b.x()+b.w(), b.h()+b.y()-i);
-				checkClickedNode(b.x()+b.w(), b.h()+b.y()-i, gmousex, gmousey, 2);
-				i++;
-				MaShine.println(a.getClassName()+": "+a.get());
-			}
-			i = 1;
-			for(OutNode a : b.getControlOutNodes().values()){
-
-				drawNode(a, b.w()+b.x()-i, b.h()+b.y());
-				checkClickedNode(b.w()+b.x()-i, b.h()+b.y(), gmousex, gmousey, 2);
-				i++;
-				MaShine.println(a.getClassName()+": "+a.get());
-			}
+		for(Pair coord : world.getNodes().keySet()){
+			Node n = world.getNodes().get(coord);
+			drawNode(n, (Integer) coord.getFirst(), (Integer) coord.getSecond());
+			checkClickedNode(n, (Integer) coord.getFirst(), (Integer) coord.getSecond(), gmousex, gmousey);
 		}
 
 		click = false;
@@ -107,27 +92,29 @@ public class Grid{
 	}
 
 	private void drawNode(Node n, int x, int y){
-		p.stroke(38,50,56); // #263238
+		
+		FlatColor.stroke(p.g, Colors.MATERIAL.BLUE_GREY._900);
+
 		p.strokeWeight(4);
 
 		if(n instanceof InNode){
-			p.fill(100,255,218); // #64FFDA
+			FlatColor.fill(p.g, Colors.MATERIAL.TEAL.A200);
 		}else{
-			p.fill(255,255,0); // #FFFF00
+			FlatColor.fill(p.g, Colors.MATERIAL.YELLOW.A200);
 		}
 		p.rectMode(p.RADIUS);
 
 		p.strokeJoin(p.ROUND);
-		if(n.getClassName().equals("Number")){
+		if(n.getType().equals("Number")){
 			p.ellipse(x*gridSize, y*gridSize, gridSize/2.5f, gridSize/2.5f);
-		}else if(n.getClassName().equals("Boolean")){
+		}else if(n.getType().equals("Boolean")){
 			p.rect(x*gridSize, y*gridSize, gridSize/5, gridSize/5);
-		}else if(n.getClassName().equals("Frame")){
+		}else if(n.getType().equals("Frame")){
 			p.triangle((x-0.15f)*gridSize, (y-0.25f)*gridSize, (x-0.15f)*gridSize, (y+0.25f)*gridSize, (x+0.23f)*gridSize, y*gridSize);
-		}else if(n.getClassName().equals("Sequence")){
+		}else if(n.getType().equals("Sequence")){
 			p.triangle((x-0.15f)*gridSize, (y-0.25f)*gridSize, (x-0.15f)*gridSize, (y+0.25f)*gridSize, (x+0.23f)*gridSize, y*gridSize);
 			p.ellipse((x-0.1f)*gridSize, y*gridSize, gridSize/6, gridSize/6);
-		}else if(n.getClassName().equals("DeviceGroup")){
+		}else if(n.getType().equals("DeviceGroup")){
 			p.rect(x*gridSize, y*gridSize, gridSize/5, gridSize/5);
 			p.strokeWeight(3);
 			p.line((x-0.25f)*gridSize, y*gridSize, (x+0.25f)*gridSize, y*gridSize);
@@ -138,12 +125,14 @@ public class Grid{
 		p.rectMode(p.CORNER);
 	}
 
-	void checkClickedNode(int x, int y, int gx, int gy, int t){
+	void checkClickedNode(Node n, int x, int y, int gx, int gy){
 		if(x == gx && y == gy && click){
-			if(t == 1){
+			if(n instanceof OutNode){
 				start = new PVector(x,y);
-			}else{
+				MaShine.println(n.getType());
+			}else if(n instanceof InNode){
 				end = new PVector(x,y);
+				MaShine.println(n.getType());
 			}
 			if(start != null && end != null){
 				//paths.add(AStar((int)Math.floor(start.x), (int)Math.floor(start.y), (int)Math.floor(end.x), (int)Math.floor(end.y)));
@@ -171,7 +160,19 @@ public class Grid{
 		gridSize = Math.min(200, Math.max(20, gridSize));
 	}
 	public void drag(PVector amount){
-		pxOffset = PVector.add(pxOffset, amount);
+
+		// generate map
+		// PVector[] bounds = getBounds(gmousex, gmousey, gmousex+1,gmousey+1);
+		// int [][] map = getMap(bounds[0], bounds[1]);
+
+		// int gmx = (int)Math.floor(gmousex - bounds[0].x);
+		// int gmy = (int)Math.floor(gmousey - bounds[0].y);
+		// if(map[gmx][gmy] == 0){
+			pxOffset = PVector.add(pxOffset, amount);
+		// }else if(false){
+
+		// }
+
 	}
 
 	public void click(){
@@ -194,6 +195,19 @@ public class Grid{
 			} 
 		}
 
+		Node startNode = world.getNode(x1, y1);
+		Node endNode = world.getNode(x2, y2);
+		boolean startIsNode = startNode != null;
+		boolean endIsNode = endNode != null;
+
+
+
+		if(startIsNode && endIsNode){
+			if(startNode.getClass() == endNode.getClass()){ return null; }
+			if(!startNode.getType().equals(endNode.getType())){ return null; }
+			//if(instanceof startNode == instanceof);
+		}
+
 		// A* constants (tweaked to avoid zigzaging) (also, no diagonal paths)
 		int G = 10;
 		boolean under = x1 == x2 ? false : Math.abs(y2-y1)/Math.abs(x2-x1) < 1;
@@ -204,21 +218,12 @@ public class Grid{
 		Map<String,Square> open = new HashMap<String,Square>();
 		Map<String,Square> closed = new HashMap<String,Square>();
 
-		// generate map
-		PVector[] bounds = getBounds(x1, y1, x2, y2);
-		int [][] map = getMap(bounds[0], bounds[1]);
-
-		x1 -= Math.floor(bounds[0].x);
-		x2 -= Math.floor(bounds[0].x);
-		y1 -= Math.floor(bounds[0].y);
-		y2 -= Math.floor(bounds[0].y);
-
 		// put the stating point
 		open.put(x1+":"+y1, new Square(x1, y1, x1, y1, 0, 0, 0));
 		Square current = null;
 
 		// check start/end validity, exit with null
-		if(map[x1][y1] == 1 || map[x2][y2] == 1) return null;
+		if(world.isBlocked(x1, y1) || world.isBlocked(x2, y2)){return null;}
 
 		while(true){
 
@@ -242,15 +247,10 @@ public class Grid{
 					int x = (i == 0 ? current.x - 1 : (i == 2 ? current.x + 1 : current.x));
 					int y = (i == 3 ? current.y - 1 : (i == 1 ? current.y + 1 : current.y));
 			// process it :
-					if(
-						x < 0 ||
-						y < 0 ||
-						x > map.length -1 ||
-						y > map[0].length -1 ||
-						closed.containsKey(x+":"+y)
-				){  // unreachable/treated block, end laps
-					// invalid (1:blocked,      middle segment a not on free space         end point on a starting point   )
-					}else if(map[x][y] == 1 || (x != x2 || y != y2) && map[x][y] != 0 ||  (x == x2 && y == y2) && map[x][y] == map[x1][y1]){
+					if(closed.containsKey(x+":"+y)){ // treated block, end laps
+					}else if(world.isBlocked(x, y)){  // if blocked at x,y
+					}else if(!(x == x2 && y == y2) && world.getNode(x, y) != null){ // except 
+					//}else if(!(x == x2 && y == y2) && world.getNode(x, y) != null){ // except 
 					}else{
 						// heuristic score
 						int h = Math.abs(x2-x)*Hxf+Math.abs(y2-y)*Hyf;
@@ -266,58 +266,15 @@ public class Grid{
 
 		// follow the path to starting square, records path without offsets :
 		while(true){
-			path.add(new PVector(bounds[0].x + current.x, bounds[0].y + current.y));
+			path.add(new PVector(current.x, current.y));
 			current = closed.get(current.px+":"+current.py);
 			if(current.x == x1 && current.y == y1){
-				path.add(new PVector(bounds[0].x + current.px, bounds[0].y + current.py));
+				path.add(new PVector(current.px, current.py));
 				break;
 			}
 		}
 
 		return path;
 	}
-
-	private PVector[] getBounds(int x1, int y1, int x2, int y2){
-		PVector min = new PVector(Math.min(x1, x2), Math.min(y1, y2));
-		PVector max = new PVector(Math.max(x1, x2), Math.max(y1, y2));
-
-		for (Block b : blocks) {
-			if(b.x() < min.x) min.x = b.x();
-			if(b.y() < min.y) min.y = b.y();
-			if(b.x() + b.w() > max.x) max.x = b.x() + b.w();
-			if(b.y() + b.h() > max.y) max.y = b.y() + b.h();
-		}
-
-		min.x -= 3;
-		min.y -= 3;
-		max.x += 3;
-		max.y += 3;
-
-		PVector[] r = {min, max};
-		return r;
-		
-	}
-
-	private int[][] getMap(PVector min, PVector max){
-		int[][] map = new int[(int)Math.floor(max.x-min.x)][(int)Math.floor(max.y-min.y)]; // 0 FREE
-
-		for (Block b : blocks) {
-			for(int bx = b.x(); bx <= b.x() + b.w(); bx++){
-				int x = bx - b.x();
-				for(int by = b.y(); by <= b.y() + b.h(); by++){
-					int y = by - b.y();
-					map[(int)Math.floor(bx-min.x)][(int)Math.floor(by-min.y)] = 1; // 1 BLOCKED
-					if(y == 0 && x != 0 && x <= b.topNodeCount()) map[(int)Math.floor(bx-min.x)][(int)Math.floor(by-min.y)] = 2; // 2 IN
-					if(x == 0 && y != 0 && y <= b.leftNodeCount()) map[(int)Math.floor(bx-min.x)][(int)Math.floor(by-min.y)] = 2; // 2 IN
-					
-					if(x == b.w() && y != b.h() && y >= b.h() - b.rightNodeCount()) map[(int)Math.floor(bx-min.x)][(int)Math.floor(by-min.y)] = 3; // 3 OUT
-					if(y == b.h() && x != b.w() && x >= b.w() - b.bottomNodeCount()) map[(int)Math.floor(bx-min.x)][(int)Math.floor(by-min.y)] = 3; // 3 OUT
-				}
-			}
-		}
-
-		return map;
-	}
-
 
 }
