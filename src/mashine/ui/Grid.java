@@ -161,17 +161,11 @@ public class Grid{
 	}
 	public void drag(PVector amount){
 
-		// generate map
-		// PVector[] bounds = getBounds(gmousex, gmousey, gmousex+1,gmousey+1);
-		// int [][] map = getMap(bounds[0], bounds[1]);
-
-		// int gmx = (int)Math.floor(gmousex - bounds[0].x);
-		// int gmy = (int)Math.floor(gmousey - bounds[0].y);
-		// if(map[gmx][gmy] == 0){
+		if(world.getBlock(gmousex, gmousey) == null){
 			pxOffset = PVector.add(pxOffset, amount);
-		// }else if(false){
+		}else if(false){
 
-		// }
+		}
 
 	}
 
@@ -218,7 +212,7 @@ public class Grid{
 		Map<String,Square> open = new HashMap<String,Square>();
 		Map<String,Square> closed = new HashMap<String,Square>();
 
-		// put the stating point
+		// put the starting point
 		open.put(x1+":"+y1, new Square(x1, y1, x1, y1, 0, 0, 0));
 		Square current = null;
 
