@@ -24,6 +24,7 @@ public class MaShine extends PApplet{
 	public static String VERSION = "0.1.3";
 
 	private static final String[] MAIN_WINDOW = new String[] { "mashine.MaShine" };
+	private static boolean startFullscreen = false;
 	private String lastSavedTo = "";
 	private String lastBackupFile = "";
 
@@ -36,16 +37,29 @@ public class MaShine extends PApplet{
 	public static MaShine m;
 
 	public static void main(String[] args) {
+		for(int i = 0; i < args.length; i++) {
+			if(args[i].equals("-f") || args[i].equals("--fullscreen")){
+				startFullscreen = true;
+			}
+		}
+
 		PApplet.main(MAIN_WINDOW);
 	}
 
 	public void settings() {
-		size(1920, 1080, PApplet.P3D);
+		
+		println("MaShine "+ VERSION + " / procsynth");
+
+		if(startFullscreen){
+			println("Starting fullscreen.");
+			fullScreen(PApplet.P3D);
+		}else{
+			size(1920, 1080, PApplet.P3D);
+		}
 		noSmooth();
 	}
 
 	public void setup() {
-		println("MaShine "+ VERSION + " / procsynth");
 
 		m = this;
 		frameRate(50);
