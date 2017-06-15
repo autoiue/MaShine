@@ -23,18 +23,17 @@ public class Sequencer implements Serializable{
 	private boolean tweaking = false;
 	private boolean manual = false;
 	private boolean loop = true;
-	private int clip;
-	private int offset;
 	private int index;
+	private boolean crossFrameState = true;
 
 	public Sequencer(String name, Sequence sequence){
 		this.name = name;
 		this.sequence = sequence;
-		this.clip = 0;
-		this.offset = 0;
 		this.index = 0;
 
 		MaShine.inputs.link("sequencer."+name+".forward.auto", "minim.beat.interpolated");
+
+		MaShine.inputs.registerRange("sequencer."+name+".cross");
 		registerActions();
 	}
 
@@ -42,15 +41,10 @@ public class Sequencer implements Serializable{
 		MaShine.inputs.registerAction("sequencer."+name+".manual.start", new Do(){public void x(){manual = true;}});
 		MaShine.inputs.registerAction("sequencer."+name+".manual.end", new Do(){public void x(){manual = false;}});
 
-		MaShine.inputs.registerAction("sequencer."+name+".reset", new Do(){public void x(){setIndex(clip);}});
+		MaShine.inputs.registerAction("sequencer."+name+".reset", new Do(){public void x(){setIndex(0);}});
 		MaShine.inputs.registerAction("sequencer."+name+".loop.toggle", new Do(){public void x(){loop = !loop;}});
 		MaShine.inputs.registerAction("sequencer."+name+".loop.on", new Do(){public void x(){loop = true;}});
 		MaShine.inputs.registerAction("sequencer."+name+".loop.off", new Do(){public void x(){loop = false;}});
-
-		MaShine.inputs.registerAction("sequencer."+name+".clip.less.tweak", new Do(){public void x(){if(tweaking)setClip(clip +1);}});
-		MaShine.inputs.registerAction("sequencer."+name+".clip.more.tweak", new Do(){public void x(){if(tweaking)setClip(clip -1);}});
-		MaShine.inputs.registerAction("sequencer."+name+".offset.less.tweak", new Do(){public void x(){if(tweaking)setOffset(offset +1);}});
-		MaShine.inputs.registerAction("sequencer."+name+".offset.more.tweak", new Do(){public void x(){if(tweaking)setOffset(offset -1);}});
 
 		MaShine.inputs.registerAction("sequencer."+name+".forward.manual", new Do(){public void x(){if(manual)setIndex(index +1);}});
 		MaShine.inputs.registerAction("sequencer."+name+".backward.manual", new Do(){public void x(){if(manual)setIndex(index -1);}});
@@ -59,46 +53,34 @@ public class Sequencer implements Serializable{
 		MaShine.inputs.registerAction("sequencer."+name+".backward.auto", new Do(){public void x(){if(!manual)setIndex(index -1);}});
 	}
 
-	public void setClip(int v){
-		if(v == 0){
-			clip = 0;
-		}else{
-			clip = Math.max(1, Math.min(v, sequence.getSize() - offset));
-		}
-	};
-	public void setOffset(int v){
-		offset = Math.max(0, Math.min(v, sequence.getSize() - 2));
-		setClip(clip);
-	};
 	public void setIndex(int v){
-		setOffset(offset);
-		if(clip == 0){
-			if(v < offset){
-				v = sequence.getSize() - 1;
-			}
-			if(v >= sequence.getSize()){
-				if(loop)
-					v = offset;
-				else
-					v = sequence.getSize() - 1;
-			}
-		}else{
-			if(v < offset){
-				v = offset + clip - 1;
-			}
-
-			if(v >= offset + clip ){
-				if(loop)
-					v = offset;
-				else
-					v = (offset + clip) - 1;
-			}
-		}
-		index = v;
+		index = calcIndex(v);
 	};
+
+	private int calcIndex(int v){
+		if(v < 0){
+			v = sequence.getSize() - 1;
+		}else if(v >= sequence.getSize()){
+			if(loop)
+				v = 0;
+			else
+				v = sequence.getSize() - 1;
+		}
+		return v;
+	}
 
 	public Frame getFrame(){
-		return sequence.getFrame(index);
+		float crossFrame = (float)MaShine.inputs.getRange("sequencer."+name+".cross");
+
+		if(crossFrame == 0f || crossFrame == 1f){
+			if(!crossFrameState && crossFrame == 1f || crossFrameState && crossFrame == 0f){
+				setIndex(index + 1);
+				crossFrameState = !crossFrameState;
+			}
+			return sequence.getFrame(index);
+		}else{
+			return Frame.mix((!crossFrameState ? crossFrame : 1f - crossFrame) , sequence.getFrame(index), sequence.getFrame(calcIndex(index + 1)));
+		}
 	}
 
 	public Sequence getSequence(){
@@ -113,8 +95,6 @@ public class Sequencer implements Serializable{
 		return name;
 	}
 
-	public int getClip(){return clip;}
-	public int getOffset(){return offset;}
 	public int getIndex(){return index;}
 
 	public void startTweak(){

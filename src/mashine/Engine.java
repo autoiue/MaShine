@@ -31,6 +31,9 @@ public class Engine{
 		tracks.add(new Track("D"));
 		tracks.add(new Track("E"));
 		tracks.add(new Track("F"));
+		tracks.add(new Track("G"));
+		tracks.add(new Track("H"));
+		tracks.add(new Track("K"));
 
 		String dimmerName = addFilter("dimmer");
 		if(dimmerName != null){
@@ -45,8 +48,8 @@ public class Engine{
 	public void tick(){
 		Frame frame = new Frame();
 
-		for(int i = 0; i < tracks.size(); i ++){
-			frame = Frame.mix(frame, tracks.get(i).getFrame()); 
+		for(int i = tracks.size() - 1; i >= 0; i --){
+			frame = Frame.mix(tracks.get(i).getOpacity(), frame, tracks.get(i).getFrame()); 
 		}
 
 		for(Filter f : filters){

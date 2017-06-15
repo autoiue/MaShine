@@ -131,9 +131,21 @@ public class Filter implements Serializable{
 	public Robot getRobot(){return robot;}
 	public HashMap<String, Short> getParameters(){return parameters;}
 	public boolean isEnabled(){return enabled || MaShine.inputs.getState(this.name+".enabled");}
-	public void disable(){enabled = false;}
-	public void enable(){enabled = true;}
-	public void toggle(){enabled = !enabled;}
+	public void disable(){enabled = false; MaShine.inputs.setState(this.name+".enabled", enabled);
+		for(String key : frames.keySet()){
+			frames.put(key, new Frame());
+		}
+	}
+	public void enable(){enabled = true; MaShine.inputs.setState(this.name+".enabled", enabled);
+		for(String key : frames.keySet()){
+			frames.put(key, new Frame());
+		}
+	}
+	public void toggle(){enabled = !enabled; MaShine.inputs.setState(this.name+".enabled", enabled);
+		for(String key : frames.keySet()){
+			frames.put(key, new Frame());
+		}
+	}
 
 	public void setLong(String param, Long value){longs.put(param, value);}
 	public void setFrame(String param, Frame value){frames.put(param, value);}

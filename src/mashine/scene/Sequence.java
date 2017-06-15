@@ -33,8 +33,8 @@ public class Sequence implements Serializable{
 	}
 
 	public Frame getFrame(int index){
-		if(index >= frames.size())
-			index = frames.size() -1;
+		// if(index >= frames.size())
+		// 	index = frames.size() -1;
 		return frames.get(index);
 	}
 

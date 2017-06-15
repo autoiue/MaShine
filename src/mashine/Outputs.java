@@ -34,6 +34,10 @@ public class Outputs{
 		}
 	}
 
+	public Frame getFrame(){
+		return new Frame(frame);
+	}
+
 	public void setFrame(Frame frame){
 		if (null == this.frame) {
 			this.frame = frame;

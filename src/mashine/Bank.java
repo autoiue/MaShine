@@ -74,7 +74,7 @@ public class Bank implements Serializable{
 					for(Feature f : feats){
 						if(f instanceof ColorFeature){
 							ColorFeature c = (ColorFeature) f;
-							c.link(new FlatColor(0));
+							c.link(new FlatColor(0,0,0,0));
 							frame.addFeature(d, c);
 						}
 					}

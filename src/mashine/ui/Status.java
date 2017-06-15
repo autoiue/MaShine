@@ -43,7 +43,7 @@ public class Status{
 			s += key +": "+ status.get(key) + "  ";
 		}
 		MaShine.m.fill(255, 255, 255);
-		MaShine.m.text(s.toLowerCase(), 4, MaShine.m.height - 7);
+		MaShine.m.text(s, 4, MaShine.m.height - 7);
 		MaShine.m.textAlign(PApplet.RIGHT);
 		MaShine.m.text(PApplet.round(MaShine.m.frameRate), MaShine.m.width - 29, MaShine.m.height - 7);
 		MaShine.m.textAlign(PApplet.LEFT);

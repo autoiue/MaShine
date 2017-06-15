@@ -62,6 +62,7 @@ public class Inputs{
 			put("c", new InputConstants());
 			put("clock", new Clock());
 			put("udp", new UDPInput());
+			put("osc", new OSC());
 		}};
 
 		learnable = new ArrayList<Learnable>();
@@ -115,12 +116,17 @@ public class Inputs{
 	public void setState(String inputName, Boolean state){	stateInputs.put(inputName, state);}
 
 	public boolean getState(String inputName){
+		boolean comp = true;
+		if(inputName.startsWith("!")){
+			inputName = inputName.substring(1);
+			comp = false;
+		}
 		if(stateInputs.containsKey(inputName)){
-			return stateInputs.get(inputName);
+			return comp == stateInputs.get(inputName);
 		}else if(stateLinks.containsKey(inputName)){
-			return getState(stateLinks.get(inputName));
+			return comp == getState(stateLinks.get(inputName));
 		}else{
-			return false;		
+			return false;
 		}
 	}
 

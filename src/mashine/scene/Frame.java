@@ -10,13 +10,15 @@ package mashine.scene;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 import mashine.scene.features.EditableFeature;
 import mashine.scene.features.Feature;
 
 public class Frame implements Serializable{
 
-	private static final long serialVersionUID = 0xF44E0001L;
+	private static final long serialVersionUID = 0xF44E0002L;
 
 	private HashMap<String,EditableFeature> features;
 
@@ -89,15 +91,20 @@ public class Frame implements Serializable{
 			features.get(d.getIdentifier()+"."+featureType).setField(fieldName, value);
 	}
 
-	public static Frame mix(Frame top, Frame base){
-		Frame mix = new Frame(base);
+	public static Frame mix(Float opacity, Frame bottom, Frame top){
+		Frame mixed = new Frame();
+		bottom = new Frame(bottom);
+		top = new Frame(top);
 
-		HashMap<String,EditableFeature> topFeatures = top.getFeatures();
+		Set<String> featureSet = new HashSet<String>(); 
 
-		for(String fs : topFeatures.keySet()){
-			mix.addFeature(fs, topFeatures.get(fs));
+		featureSet.addAll(top.getFeatures().keySet());
+		featureSet.addAll(bottom.getFeatures().keySet());
+
+		for(String fs : featureSet){
+			mixed.addFeature(fs, (EditableFeature)Feature.mix(opacity, bottom.getFeature(fs), top.getFeature(fs)));
 		}
 
-		return mix;
+		return mixed;
 	}
 }

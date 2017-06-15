@@ -16,12 +16,13 @@ import mashine.scene.Frame;
 
 public class Track implements Serializable{
 
-	private static final long serialVersionUID = 0x1A0F0001L;
+	private static final long serialVersionUID = 0x1A0F0002L;
 
 	private String name;
 	public Sequencer sequencer;
 	private ArrayList<Filter> filters;
-	private int filterIndex; 
+	private int filterIndex;
+	private float opacity;
 
 	private boolean tweaked = false;
 
@@ -29,12 +30,12 @@ public class Track implements Serializable{
 		this.name = name;
 		sequencer = new Sequencer(name, MaShine.bank.getSequence(0));
 		filters = new ArrayList<Filter>();
+		opacity = 1f;
 
-		String filterName = addFilter("dimmer");
-		if(filterName != null){
-			MaShine.inputs.state(filterName+".enabled", "_true");
-			MaShine.inputs.range(filterName+".value", "_100");
-		}
+		
+		MaShine.inputs.registerRange("track."+name+".opacity");
+		MaShine.inputs.range("track."+name+".opacity", "_100");
+
 		registerActions();
 	}
 
@@ -53,6 +54,12 @@ public class Track implements Serializable{
 		}
 		return frame;
 	}
+
+	public float getOpacity(){ 
+		opacity = (float)MaShine.inputs.getRange("track."+name+".opacity");
+		return opacity;
+	}
+
 
 	public String addFilter(String type){
 		if(MaShine.bank.getFilter(type) != null){

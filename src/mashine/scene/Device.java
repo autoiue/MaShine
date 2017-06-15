@@ -43,13 +43,17 @@ public class Device implements Serializable{
 	}
 
 	public Device(Device d, String name){
+		this(d, name, d.getStartAddress());
+	}
+
+	public Device(Device d, String name, int previousStartAddress){
 		this.name = name;
-		this.startAddress = d.getStartAddress();
 		this.universe = d.getUniverse();
 		features = d.getFeatures();
 		for(Feature f : features){
 			footprint += f.getFootprint();
 		}
+		this.startAddress = previousStartAddress + footprint;
 		this.x = d.getX();
 		this.y = d.getY() + 5 + d.getHeight();;
 		this.w = d.getWidth();

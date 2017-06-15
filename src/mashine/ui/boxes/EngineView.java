@@ -58,10 +58,7 @@ public class EngineView extends Drawable {
 			for(int i = 0; i < t.sequencer.getSequence().getSize(); i++){
 				if(t.sequencer.getIndex() == i){
 					FlatColor.fill(canvas, Colors.MATERIAL.ORANGE.A400);
-				}else if(i < t.sequencer.getOffset()){			
-					FlatColor.fill(canvas, Colors.MATERIAL.BLUE_GREY._300);
-				}else if(i < t.sequencer.getClip() + t.sequencer.getOffset()){
-					FlatColor.fill(canvas, Colors.MATERIAL.BLUE_GREY._800);	
+
 				}else{
 					FlatColor.fill(canvas, Colors.MATERIAL.BLUE_GREY._500);
 				}
@@ -77,7 +74,7 @@ public class EngineView extends Drawable {
 			}
 
 			canvas.text(
-				t.sequencer.getName()+" @"+(t.sequencer.getIndex()+1) +" >"+ t.sequencer.getOffset()+" %"+t.sequencer.getClip() + filtersList,
+				t.sequencer.getName()+" @"+(t.sequencer.getIndex()+1) + filtersList,
 				MaShine.m.width - 424, offset - 6
 			);
 			offset += 20;

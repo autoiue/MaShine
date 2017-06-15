@@ -307,9 +307,13 @@ public class DeviceEditor extends UIBox{
 	private void cloneSelectedDevices(){
 		ArrayList<Device> selectedDevices = MaShine.ui.getSelectedDevices();
 		ArrayList<Device> newSelectedDevices = new ArrayList<Device>();
-		for(Device d : selectedDevices){
-			Device newDev = new Device(d, d.getName());
+		int previousStartAddress = 0;
 
+		for(Device d : selectedDevices) if(previousStartAddress < d.getStartAddress()) previousStartAddress = d.getStartAddress();
+
+		for(Device d : selectedDevices){
+			Device newDev = new Device(d, d.getName(), previousStartAddress);
+			previousStartAddress += newDev.getFootprint();
 			MaShine.scene.addDevice(newDev);
 			newSelectedDevices.add(newDev);		
 		}

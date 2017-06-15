@@ -1,0 +1,114 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007efe4d0696ba, pid=20295, tid=139630272317184
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_91-b14) (build 1.8.0_91-b14)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.91-b14 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# v  ~BufferBlob::jni_fast_GetLongField
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007efe5c380000):  JavaThread "AWT-XAWT" daemon [_thread_in_native, id=20315, stack(0x00007efe34b80000,0x00007efe34c81000)]
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000000000
+
+Registers:
+RAX=0x00007efe63540d00, RBX=0x00007efe5c3801f8, RCX=0x00007efe63fa72c0, RDX=0x0000000000000042
+RSP=0x00007efe34c7f7b8, RBP=0x00007efe34c7f7e0, RSI=0x0000000000000000, RDI=0x00007efe5c3801f8
+R8 =0x00000000dbeaced0, R9 =0x0000000000000000, R10=0x00000000000000de, R11=0x00007efe4daa9a18
+R12=0x00007efda41713d0, R13=0x0000000000000000, R14=0x00007efe36a117e0, R15=0x00007efe5c380000
+RIP=0x00007efe4d0696ba, EFLAGS=0x0000000000010246, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007efe34c7f7b8)
+0x00007efe34c7f7b8:   00007efe367efef1 00007efe4cbe9210
+0x00007efe34c7f7c8:   00007efda41713d0 00007efe34c7f890
+0x00007efe34c7f7d8:   00007efe34c7f860 0000000000000000
+0x00007efe34c7f7e8:   00007efe362d13c0 00007efe4cbe9210
+0x00007efe34c7f7f8:   00007efe34c7f820 0000000000000000
+0x00007efe34c7f808:   00007efe362c8f93 00007efe34c7f890
+0x00007efe34c7f818:   00007efe367e912f 00007efe34c7f870
+0x00007efe34c7f828:   00007efe4daa9ab6 0000000000000000
+0x00007efe34c7f838:   00007efe4d80ca76 00007efe34c7f890
+0x00007efe34c7f848:   00007efe4d18f56c 00007efe34c7f8f0
+0x00007efe34c7f858:   0000000085ec07d8 0000000086176d70
+0x00007efe34c7f868:   0000000000000019 00007efe34c7f8f0
+0x00007efe34c7f878:   00007efe4d007a90 00007efe34c7f8f0
+0x00007efe34c7f888:   00007efe4d007a90 0000000000000000
+0x00007efe34c7f898:   00007efe4d007dd0 00007efe0c000e30
+0x00007efe34c7f8a8:   0000000085fbc3b0 00007efe34c7f8b0
+0x00007efe34c7f8b8:   00007efe4cb9794c 00007efe34c7f938
+0x00007efe34c7f8c8:   00007efe4cbaf600 0000000000000000
+0x00007efe34c7f8d8:   00007efe4cb97a88 00007efe34c7f890
+0x00007efe34c7f8e8:   00007efe34c7f930 00007efe34c7f980
+0x00007efe34c7f8f8:   00007efe4d0082bd 0000000000000000
+0x00007efe34c7f908:   00000000d9282648 0000000000000000
+0x00007efe34c7f918:   0000000000000000 0000000000000000
+0x00007efe34c7f928:   0000000085fbc3b0 0000000000000000
+0x00007efe34c7f938:   0000000085dbe9b8 00007efe34c7f940
+0x00007efe34c7f948:   00007efe4cb9778d 00007efe34c7f990
+0x00007efe34c7f958:   00007efe4cbaf600 0000000000000000
+0x00007efe34c7f968:   00007efe4cb97798 00007efe34c7f930
+0x00007efe34c7f978:   00007efe34c7f990 00007efe34c7f9d8
+0x00007efe34c7f988:   00007efe4d008302 0000000085dbe9b8
+0x00007efe34c7f998:   00007efe34c7f998 00007efe4c82d8db
+0x00007efe34c7f9a8:   00007efe34c7f9e8 00007efe4c8b4dd8 
+
+Instructions: (pc=0x00007efe4d0696ba)
+0x00007efe4d06969a:   00 00 00 00 00 00 44 8b 15 01 6c 51 16 4c 8b ce
+0x00007efe4d0696aa:   41 f6 c2 01 0f 85 2e 00 00 00 4d 33 ca 4d 33 ca
+0x00007efe4d0696ba:   4d 8b 09 4c 8b da 49 c1 eb 02 4b 8b 04 19 49 bb
+0x00007efe4d0696ca:   a8 02 58 63 fe 7e 00 00 4c 33 d8 4c 33 d8 45 3b 
+
+Register to memory mapping:
+
+RAX=0x00007efe63540d00: <offset 0xf77d00> in /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so at 0x00007efe625c9000
+RBX=0x00007efe5c3801f8 is an unknown value
+RCX=0x00007efe63fa72c0: <offset 0x2182c0> in /lib/x86_64-linux-gnu/libpthread.so.0 at 0x00007efe63d8f000
+RDX=0x0000000000000042 is an unknown value
+RSP=0x00007efe34c7f7b8 is pointing into the stack for thread: 0x00007efe5c380000
+RBP=0x00007efe34c7f7e0 is pointing into the stack for thread: 0x00007efe5c380000
+RSI=0x0000000000000000 is an unknown value
+RDI=0x00007efe5c3801f8 is an unknown value
+R8 =0x00000000dbeaced0 is an oop
+java.util.logging.Logger 
+ - klass: 'java/util/logging/Logger'
+R9 =0x0000000000000000 is an unknown value
+R10=0x00000000000000de is an unknown value
+R11=0x00007efe4daa9a18 is at entry_point+24 in (nmethod*)0x00007efe4daa9890
+R12=0x00007efda41713d0 is an unknown value
+R13=0x0000000000000000 is an unknown value
+R14=0x00007efe36a117e0: <offset 0x2587e0> in /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt_xawt.so at 0x00007efe367b9000
+R15=0x00007efe5c380000 is a thread
+
+
+Stack: [0x00007efe34b80000,0x00007efe34c81000],  sp=0x00007efe34c7f7b8,  free space=1021k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+v  ~BufferBlob::jni_fast_GetLongField
+C  [libX11.so.6+0x643c0]  _XimServerDestroy+0x70
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+J 3291  sun.awt.X11.XlibWrapper.XFilterEvent(JJ)Z (0 bytes) @ 0x00007efe4daa9a44 [0x00007efe4daa9a00+0x44]
+j  sun.awt.X11.XToolkit.run(Z)V+300
+j  sun.awt.X11.XToolkit.run()V+5
+j  java.lang.Thread.run()V+11
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007efdfc010800 JavaThread "Thread-0" [_thread_blocked, id=20497, stack(0x00007efdd00ed000,0x00007efdd01ee000)]
+  0x00007efe20003000 JavaThread "SIGTERM handler" daemon [_thread_blocked, id=20496, stack(0x00007efdd01ee000,0x00007efdd02ef000)]
+  0x00007efdfc00f000 JavaThread "Thread-12" [_thread_blocked, id=20461, stack(0x00007efdd02ef000,0x00007efdd03f0000)]
+  0x00007efdfc00e000 JavaThread "NativeWindowFactory_ShutdownHook" [_thread_blocked, id=20428, stack(0x00007efe07eff000,0x00007efe08000000)]
+  0x00007efe20002000 JavaThread "SIGTERM handler" daemon [_thread_blocked, id=20422

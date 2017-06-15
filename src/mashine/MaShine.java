@@ -25,7 +25,7 @@ public class MaShine extends PApplet{
 
 	private static final String[] MAIN_WINDOW = new String[] { "mashine.MaShine" };
 	private static boolean startFullscreen = false;
-	private String lastSavedTo = "";
+	private String lastSavedTo = "untitled.mashine";
 	private String lastBackupFile = "";
 
 	public static Inputs inputs;
@@ -62,7 +62,7 @@ public class MaShine extends PApplet{
 	public void setup() {
 
 		m = this;
-		frameRate(50);
+		frameRate(60);
 		surface.setResizable(true);
 
 		outputs = new Outputs();
@@ -83,11 +83,15 @@ public class MaShine extends PApplet{
 	}
 
 	public void draw() {
-		background(55, 71, 79);
-		inputs.poll();
-		engine.tick();
-		ui.draw();
-		outputs.push();
+		try{
+			background(55, 71, 79);
+			inputs.poll();
+			engine.tick();
+			ui.draw();
+			outputs.push();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	public void keyPressed(KeyEvent e){
@@ -111,17 +115,26 @@ public class MaShine extends PApplet{
 
 	public void save(){
 		println("Requesting path to save to.");
-		selectOutput("Select file to save to.", "save");
+		selectOutput("Select file to save to.", "save", new File(lastSavedTo));
 	}
 
 	public void save(File file){
 		if(file != null)
-			save(file.getAbsolutePath());
+			override(file.getAbsolutePath());
+	}
+
+	public void override(String path){
+		File f = new File(path);
+		if(f.exists() && !f.isDirectory()) { 
+			ui.status.set("save failed", "file exists !");
+		}else{
+			save(path);
+		}
 	}
 
 	public void save(String path){
 
-		if(path.equals("")){
+		if(path.equals("untitled.mashine")){
 			save();
 			return;
 		}
@@ -145,6 +158,8 @@ public class MaShine extends PApplet{
 			out.close();
 			fileOut.close();
 			println("Serialized data is saved in "+ path);
+			ui.status.set("last saved", timestamp());
+			ui.status.remove("save failed");
 		}catch(IOException i){
 			i.printStackTrace();
 		}
@@ -165,6 +180,7 @@ public class MaShine extends PApplet{
 	public void restore(String path){
 		lastBackupFile = "mashine_"+timestamp()+".backup.mashine";
 		save(lastBackupFile);
+		lastSavedTo = path;
 		try
 		{
 			FileInputStream fileIn = new FileInputStream(path);
@@ -181,6 +197,9 @@ public class MaShine extends PApplet{
 
 			println("Restored from "+ path);
 			ui.status.set("file", path.split("/")[path.split("/").length -1]);
+
+			ui.status.set("last saved", timestamp());
+			ui.status.remove("save failed");
 
 		}catch(IOException i)
 		{

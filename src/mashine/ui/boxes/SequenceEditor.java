@@ -64,6 +64,10 @@ public class SequenceEditor extends UIBox{
 			));
 		ui.put("indexInput", new RangeInput(this, 1f, 1f, 1f, 1f, 174, 45, 30));
 
+		ui.put("snapshot", new TextButton(this, "snap", 156, 65, 50, 
+			new Do(){public void x(){snap();}}
+			));
+
 		ui.put("sendOnOutputs", new Checkbox(this, width - 14, height - 20, 
 			new Do(){public void x(){sendFrameOnOutputs = false;}},
 			new Do(){public void x(){sendFrameOnOutputs = true;}}
@@ -358,6 +362,13 @@ public class SequenceEditor extends UIBox{
 	}
 	public void copyFrame(){
 		selectedSequence.addFrame(new Frame(currentFrame));
+		currentFrameIndex = selectedSequence.getSize()-1;
+		((RangeInput)ui.get("indexInput")).setMax(currentFrameIndex +1);
+		((RangeInput)ui.get("indexInput")).setValue(currentFrameIndex +1);
+		lastSelectedDeviceHash = "";
+	}
+	public void snap(){
+		selectedSequence.addFrame(MaShine.outputs.getFrame());
 		currentFrameIndex = selectedSequence.getSize()-1;
 		((RangeInput)ui.get("indexInput")).setMax(currentFrameIndex +1);
 		((RangeInput)ui.get("indexInput")).setValue(currentFrameIndex +1);

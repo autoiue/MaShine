@@ -36,6 +36,24 @@ public abstract class Feature implements Serializable {
 		this(f.getType(), f.getFootprint(), f.getFields());
 	}
 
+	public static Feature mix(Float percentTop, Feature bottomFeature, Feature topFeature){
+		if(percentTop == 0 || topFeature == null){
+			return bottomFeature;
+		}else if(percentTop == 1 || bottomFeature == null){
+			return topFeature;
+		}else{
+			Feature mixedFeature = cloneFeature(bottomFeature);
+			for (String fd : bottomFeature.fields.keySet()) {
+				int value = (Integer) Math.round(
+				    (1f - percentTop) * bottomFeature.getField(fd) +
+				    percentTop * topFeature.getField(fd)
+				);
+				mixedFeature.setField(fd, value);
+			}
+			return mixedFeature;
+		}
+	}
+
 	public static Feature cloneFeature(Feature f){
 
 		Feature n = null;

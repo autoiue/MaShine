@@ -38,7 +38,7 @@ public class Linker extends UIBox{
 		super("LINKS", 50, 50, 300, 500, 1500);
 
 		filterInput = new TextInput(this, "", 0, 55, 100, "\\.");
-		linkInput = new TextInput(this, "", 0, 28, 189, "\\.");
+		linkInput = new TextInput(this, "", 0, 28, 189, "\\.!");
 		elements.add(filterInput);
 		elements.add(linkInput);
 		elements.add(new TextButton(this, "learn", width-54, 45, 55, 
