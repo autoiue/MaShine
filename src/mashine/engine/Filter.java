@@ -39,7 +39,7 @@ public class Filter implements Serializable{
 
 	public static abstract class Robot implements Serializable{
 		public void  setup(Filter filter){};
-		public abstract Frame f(Filter filter, Frame frame);
+		public abstract Frame f(Filter filter, Frame frame) throws Exception;
 	}
 
 	public Filter(String name, Robot robot){
@@ -62,7 +62,13 @@ public class Filter implements Serializable{
 	}
 
 	public Frame filter(Frame f){
-		return robot.f(this, f);
+		try{
+			return robot.f(this, f);
+		}catch (Exception e) {
+			MaShine.m.println("Disabled filter "+name+" because an exception was thrown.");
+			disable();
+			return f;
+		}
 	}
 	public void declare(String param, short type){
 		if(type == RANGE){

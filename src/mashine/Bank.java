@@ -483,8 +483,10 @@ public class Bank implements Serializable{
 						}
 
 						returnFrame.addFeature(targetId, currentFeature);
-					}else{
+					}else if(targetFeature != null){
 						returnFrame.addFeature(targetId, targetFeature);
+					}else{
+						// do nothing
 					}
 				}
 

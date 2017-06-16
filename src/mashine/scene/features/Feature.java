@@ -37,12 +37,12 @@ public abstract class Feature implements Serializable {
 	}
 
 	public static Feature mix(Float percentTop, Feature bottomFeature, Feature topFeature){
-		if(percentTop == 0 || topFeature == null){
+		if(percentTop == 0 || topFeature == null && bottomFeature != null){
 			return bottomFeature;
-		}else if(percentTop == 1 || bottomFeature == null){
+		}else if(percentTop == 1 || bottomFeature == null && topFeature != null){
 			return topFeature;
 		}else{
-			Feature mixedFeature = cloneFeature(bottomFeature);
+			Feature mixedFeature = cloneFeature(bottomFeature != null ? bottomFeature : topFeature);
 			for (String fd : bottomFeature.fields.keySet()) {
 				int value = (Integer) Math.round(
 				    (1f - percentTop) * bottomFeature.getField(fd) +
@@ -75,7 +75,10 @@ public abstract class Feature implements Serializable {
 		}else if(f instanceof EditableFeature){
 			n = new EditableFeature(f);
 		}else{
+			MaShine.println(f);
 			MaShine.println("NULL FEATURE WILL BE RETURNED, exceptions will rain.");// TODO: throw exception if unknow feature
+			Thread.dumpStack();
+
 		}
 
 		return n;

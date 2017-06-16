@@ -15,6 +15,7 @@ import java.util.HashSet;
 
 import mashine.scene.features.EditableFeature;
 import mashine.scene.features.Feature;
+import mashine.MaShine;
 
 public class Frame implements Serializable{
 
@@ -101,8 +102,11 @@ public class Frame implements Serializable{
 		featureSet.addAll(top.getFeatures().keySet());
 		featureSet.addAll(bottom.getFeatures().keySet());
 
-		for(String fs : featureSet){
-			mixed.addFeature(fs, (EditableFeature)Feature.mix(opacity, bottom.getFeature(fs), top.getFeature(fs)));
+		for(String fs : featureSet){	
+			EditableFeature mixedFeature = (EditableFeature)Feature.mix(opacity, bottom.getFeature(fs), top.getFeature(fs));
+			if(mixedFeature != null){
+				mixed.addFeature(fs, mixedFeature);
+			}
 		}
 
 		return mixed;
