@@ -59,7 +59,7 @@ public class DeviceElement extends Element{
 		P.canvas.noStroke();
 
 			// LHM to display all the fields contained in devices
-		LinkedHashMap<String,Integer> devFields = new LinkedHashMap<String,Integer>();
+		//LinkedHashMap<String,Integer> devFields = new LinkedHashMap<String,Integer>();
 
 		FlatColor.fill(P.canvas, Colors.MATERIAL.BLUE_GREY._600);
 
@@ -84,7 +84,7 @@ public class DeviceElement extends Element{
 				if(feature instanceof ColorFeature){
 					FlatColor.fill(P.canvas, ((ColorFeature)feature).getColor());
 					P.canvas.noStroke();
-				}else if(feature instanceof SingleField){
+				}/*else if(feature instanceof SingleField){
 					for(String f : featureFields.keySet()){
 						devFields.put(f, featureFields.get(f));
 					}
@@ -92,7 +92,7 @@ public class DeviceElement extends Element{
 					for(String f : featureFields.keySet()){
 						devFields.put(feature.getType() +"."+ f, featureFields.get(f));
 					}
-				}
+				}*/
 
 			}else{
 					// if not provided in frame (device edit mode, fixed fields)
@@ -104,7 +104,7 @@ public class DeviceElement extends Element{
 						// draw the background in grey
 					FlatColor.fill(P.canvas, Colors.MATERIAL.GREY._800);
 					drawcrossline = true;
-				}else if(feature instanceof FixedField){
+				}/*else if(feature instanceof FixedField){
 					for(String f : featureFields.keySet()){
 						devFields.put("(f) "+ f, featureFields.get(f));
 					}				
@@ -116,7 +116,7 @@ public class DeviceElement extends Element{
 					for(String f : featureFields.keySet()){
 						devFields.put(feature.getType() +"."+ f, null);
 					}
-				}
+				}*/
 			}
 		}
 
@@ -149,7 +149,7 @@ public class DeviceElement extends Element{
 		P.canvas.noStroke();
 
 			// all the fields
-		FlatColor.fill(P.canvas, Colors.MATERIAL.GREEN._400);
+		/*FlatColor.fill(P.canvas, Colors.MATERIAL.GREEN._400);
 		int offset = 18;
 
 		for(String f : devFields.keySet()){
@@ -166,7 +166,7 @@ public class DeviceElement extends Element{
 				P.canvas.text(f, d.getX() + 5, d.getY() + offset);
 			}
 			offset += 13;
-		}
+		}*/
 
 
 		// patch infos

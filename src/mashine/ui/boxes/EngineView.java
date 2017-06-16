@@ -58,7 +58,6 @@ public class EngineView extends Drawable {
 			for(int i = 0; i < t.sequencer.getSequence().getSize(); i++){
 				if(t.sequencer.getIndex() == i){
 					FlatColor.fill(canvas, Colors.MATERIAL.ORANGE.A400);
-
 				}else{
 					FlatColor.fill(canvas, Colors.MATERIAL.BLUE_GREY._500);
 				}
