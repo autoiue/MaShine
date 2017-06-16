@@ -21,7 +21,7 @@ public class MidiInputs extends InputSource implements Learnable{
 
 	private HashMap<String,MidiBus> buses;
 	private HashMap<MidiBus,MidiDevice> deviceByBuses;
-	private MidiDevice[] devicesTypes = {new KorgNanoKontrol2(), new BehringerDC1(), new GenericMidiDevice()};
+	private MidiDevice[] devicesTypes = {new KorgNanoKontrol2(), new BehringerDC1(), new MidiCon(), new GenericMidiDevice()};
 	
 	private String lastState;
 	private String lastRange;
@@ -88,6 +88,7 @@ public class MidiInputs extends InputSource implements Learnable{
 	private void registerOutputs(){
 		for(MidiBus bus : deviceByBuses.keySet()){
 			MidiDevice device = deviceByBuses.get(bus);
+			MaShine.m.println(bus + " " + device);
 			for(String output : device.getOutputs().values()){
 				MaShine.inputs.registerState("midi."+ bus.getBusName() +"."+ output);
 			}
@@ -110,9 +111,8 @@ public class MidiInputs extends InputSource implements Learnable{
 						MidiBus bus = new MidiBus(this, inputNames[i], outputNames[o], name);
 						buses.put(name, bus);
 						for(int t = 0; t < devicesTypes.length; t++){
-							if(name.contains(devicesTypes[t].getDeviceName())){
-								deviceByBuses.put(bus, devicesTypes[i]);
-								MaShine.println(name +" ol");
+							if(name.contains(devicesTypes[t].getDeviceName()) && devicesTypes[t].getDeviceName() != ""){
+								deviceByBuses.put(bus, devicesTypes[t]);
 							}
 						}
 					}
