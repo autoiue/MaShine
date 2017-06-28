@@ -38,7 +38,7 @@ public class DeviceGroup implements Serializable{
 		this(name);
 
 		for(Device d : devices){
-			this.devices.put(d, d.getStartAddress());
+			this.devices.put(d, devices.size());
 		}
 	}
 
@@ -55,7 +55,7 @@ public class DeviceGroup implements Serializable{
 	}
 
 	public void putDevice(Device d){
-		this.devices.put(d, d.getStartAddress());
+		this.devices.put(d, devices.size());
 	}
 	public void removeDevice(Device d){
 		this.devices.remove(d);

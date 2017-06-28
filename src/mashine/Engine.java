@@ -49,7 +49,8 @@ public class Engine{
 		Frame frame = new Frame();
 
 		for(int i = tracks.size() - 1; i >= 0; i --){
-			frame = Frame.mix(tracks.get(i).getOpacity(), frame, tracks.get(i).getFrame()); 
+			if(tracks.get(i).getOpacity() > 0)
+				frame = Frame.mix(tracks.get(i).getOpacity(), frame, tracks.get(i).getFrame()); 
 		}
 
 		for(Filter f : filters){

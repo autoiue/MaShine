@@ -73,7 +73,15 @@ public class Scene{
 
 	public void addGroup(DeviceGroup grp){groups.add(grp);}
 	public void deleteGroup(DeviceGroup grp){groups.remove(grp);}
-	public ArrayList<DeviceGroup> getGroups(){return new ArrayList<DeviceGroup>(groups);}
+	public ArrayList<DeviceGroup> getGroups(){
+		// HashMap<String,DeviceGroup> autoGroups = new HashMap();
+		// for (Device d : devices) {
+		// 	if(autoGroups.containsKey(d.getName())){
+		// 		autoGroups.get(d.getName())
+		// 	}
+		// }
+		return new ArrayList<DeviceGroup>(groups);
+	}
 	public DeviceGroup getGroup(int index){return groups.get(index);}
 	public int getGroupsSize(){return groups.size();}
 	
