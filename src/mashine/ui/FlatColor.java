@@ -118,8 +118,6 @@ public class FlatColor implements Serializable{
 		updateRGB();
 	}
 
-
-
 	public FlatColor withRed(int red){
 		FlatColor c = new FlatColor(this);
 		c.setRed(red);

@@ -62,7 +62,7 @@ public class Inputs{
 			put("c", new InputConstants());
 			put("clock", new Clock());
 			put("udp", new UDPInput());
-			// put("osc", new OSC());
+			//put("osc", new OSC());
 		}};
 
 		learnable = new ArrayList<Learnable>();

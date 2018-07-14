@@ -544,6 +544,91 @@ public class Bank implements Serializable{
 				return frame;
 			}
 		}));
+
+		filters.put("sat_abs", new Filter("sat_abs", new Filter.Robot(){
+			public void setup(Filter filter){
+				filter.declare("saturation", Filter.RANGE);
+			}
+			public Frame f(Filter filter, Frame frame){
+				Map<Device, Integer> weights = filter.getGroup().getDevices();
+				for(Device d : weights.keySet()){
+					List<Feature> feats = d.getFeatures();
+					for(Feature f : feats){
+						if(f instanceof ColorFeature && frame.isIn(d,f)){
+							ColorFeature c = (ColorFeature) frame.getFeature(d, f);
+							c.link(c.getLinkedColor().withSaturation((float)filter.getRange("saturation")));
+						}
+					}
+				}
+				return frame;
+			}
+		}));
+
+		filters.put("chase_on", new Filter("chase_on", new Filter.Robot(){
+			public void setup(Filter filter){
+				filter.declare("event", Filter.STATE);
+				filter.declare("direction", Filter.STATE);
+				filter.declare("speed", Filter.RANGE);
+				filter.declare("speedMult", Filter.RANGE);
+				filter.declare("min", Filter.RANGE);
+				filter.declare("max", Filter.RANGE);
+				filter.declare("size", Filter.RANGE);
+				filter.declare("offset", Filter.LONG);
+				filter.setLong("offset", 0L);
+			}
+			public Frame f(Filter filter, Frame frame){
+				Map<Device, Integer> weights = filter.getGroup().getDevices();
+				int min = -1; 
+				int max = 0;
+				for(int v : weights.values()){
+					if(min == -1 || v < min) min = v;
+					else if(v > max) max = v;
+				}
+				int length = Math.max(1, (max - min) + 1);
+				long size = 1+(long)Math.floor((float)filter.getRange("size")*length/2.0);
+				float minDim = Math.min((float)filter.getRange("min"), (float)filter.getRange("max"));
+				float rangeDim = Math.max((float)filter.getRange("min"), (float)filter.getRange("max")) - minDim;
+				boolean direction = filter.getState("direction");
+
+
+				long offset;
+
+				if(filter.getState("event")){
+					offset = 0;
+					filter.setLong("offset", offset);
+				}else{
+					offset = filter.getLong("offset");
+					offset += filter.getRange("speed")*9000f*filter.getRange("speedMult")*10f;
+					filter.setLong("offset", offset);
+				}
+
+				long soffset = (long) Math.floor(offset/10000f);
+				
+				for(Device d : weights.keySet()){
+					int w = weights.get(d);
+					List<Feature> feats = d.getFeatures();
+					for(Feature f : feats){
+						if(f instanceof ColorFeature && frame.isIn(d,f)){
+							ColorFeature c = (ColorFeature) frame.getFeature(d, f);
+							float value;
+							if(w < soffset){
+								value = Math.min(minDim + rangeDim, Math.max(minDim, inomap(w, soffset-(long)size, soffset, minDim, minDim+rangeDim)));
+								//MaShine.m.println(w, soffset-size, soffset, minDim, minDim+rangeDim);
+							}else{
+								value = minDim;
+							}
+							c.link(c.getLinkedColor().dim(value));
+						}
+					}
+				}
+				return frame;
+			}
+
+			public float inomap(long x, long in_min, long in_max, float out_min, float out_max){
+				return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+			}
+
+		}));
 	}
 
 
